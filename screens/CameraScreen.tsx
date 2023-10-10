@@ -50,6 +50,13 @@ export default function CameraScreen({ navigation, route }) {
   const interval: { current: any } = useRef(null);
   const [countDown, setCountDown] = useState(2);
   const [isCountingDown, setIsCountingDown] = useState(false);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
+
+  if(!permission?.granted) {
+    requestPermission();
+  }
+
+
 
   const { enableSpoofingChallenge } = useRequestContext();
 

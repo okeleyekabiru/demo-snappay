@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import * as Notifications from "expo-notifications";
-import * as Permissions from "expo-permissions";
+// import * as Permissions from "expo-permissions";
 
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
@@ -27,20 +27,20 @@ export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-  useEffect(() => {
-    Permissions.getAsync(Permissions.NOTIFICATIONS)
-      .then((statusObj) => {
-        if (statusObj.status !== "granted") {
-          return Permissions.askAsync(Permissions.NOTIFICATIONS);
-        }
-        return statusObj;
-      })
-      .then((statusObj) => {
-        if (statusObj.status !== "granted") {
-          return;
-        }
-      });
-  }, []);
+  // useEffect(() => {
+  //   Permissions.getAsync(Permissions.NOTIFICATIONS)
+  //     .then((statusObj) => {
+  //       if (statusObj.status !== "granted") {
+  //         return Permissions.askAsync(Permissions.NOTIFICATIONS);
+  //       }
+  //       return statusObj;
+  //     })
+  //     .then((statusObj) => {
+  //       if (statusObj.status !== "granted") {
+  //         return;
+  //       }
+  //     });
+  // }, []);
 
   if (!isLoadingComplete) {
     return null;

@@ -69,10 +69,10 @@ export default function WelcomeScreen() {
           base64: true,
         });
 
-        console.log({ ...result, base64: undefined });
+        console.log("jiji: ", result?.assets[0].base64 );
 
-        if (!result.cancelled) {
-          const dataURL = `${result?.base64}`;
+        if (!result.canceled) {
+          const dataURL = `${result?.assets[0]?.base64}`;
           setImage(dataURL);
         }
       } catch (error) {
