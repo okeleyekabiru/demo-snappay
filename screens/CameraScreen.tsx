@@ -21,6 +21,7 @@ import FadeInOut from "react-native-fade-in-out";
 import { Text, View } from "../components/Themed";
 import { useRequestContext } from "../context";
 import { psuedoNavigate } from "../App";
+import axios from "axios";
 
 const OPEN_THRESHOLD = 0.85;
 const CLOSE_THROESHOLD = 0.4;
@@ -263,39 +264,41 @@ export default function CameraScreen({ navigation, route }) {
     if (mounted) {
       setUploading(true);
       try {
-        const resp = await fetch(
-          `http://18.130.238.178:5000/api/v1/Identity/bank/getenrollee`,
+        const response = await axios.post(
+          'http://18.130.238.178:5000/api/v1/Identity/bank/getenrollee',
           {
-            method: "post",
+            image: base64,
+            bankCode: '01',
+          },
+          {
             headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
             },
-            body: JSON.stringify({
-              image: base64,
-              bankCode: "01",
-            }),
           }
         );
-        const upload = await resp.json();
+  
+        const upload = response.data;
+  
         if (upload) {
-          console.log("upload response", upload);
+          console.log('upload response', upload);
           if (upload?.statusCode === 200) {
-            psuedoNavigate("PaymentSuccess", {
+            psuedoNavigate('PaymentSuccess', {
               paymentData: upload?.data,
             });
           } else {
-            Alert.alert(upload?.errors.join("\n"));
+            Alert.alert(upload?.errors.join('\n'));
           }
         }
         setUploading(false);
       } catch (error) {
         setUploading(false);
         alert(error.message);
-        console.log("upload Error", error);
+        console.log('upload Error', error);
       }
     }
   };
+  
 
   const handleCancelPreview = () => {
     navigation.goBack();

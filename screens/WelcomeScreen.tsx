@@ -18,6 +18,7 @@ import * as Notifications from "expo-notifications";
 import * as ImagePicker from "expo-image-picker";
 import { psuedoNavigate } from "../App";
 import { useRequestContext } from "../context";
+import axios from "axios";
 
 export default function WelcomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -107,44 +108,43 @@ export default function WelcomeScreen() {
     await uploadData();
   };
 
-  const uploadData = async () => {
-    setEnrolling(true);
-    try {
-      const resp = await fetch(
-        `http://18.130.238.178:5000/api/v1/Identity/bank/enroll`,
-        {
-          method: "post",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({
-            bankCode: "01",
-            fullname,
-            image,
-            fcmToken: "fcmToken",
-          }),
-        }
-      );
-      const upload = await resp.json();
-      setEnrolling(false);
-      if (upload) {
-        if (upload?.statusCode === 200) {
-          Alert.alert("Successfully enrolled");
-          setModalVisible(false);
-        }
-        if (upload?.statusCode === 502) {
-          Alert.alert(upload?.errors.join("\n"));
-        }
-        // psuedoNavigate("PaymentSuccessScreen");
+const uploadData = async () => {
+  setEnrolling(true);
+  try {
+    const response = await axios.post(
+     'https://demo.snappayapp.com/​api​/v1​/Identity​/bank​/enroll',
+      {
+        bankCode: '01',
+        fullname,
+        image,
+        fcmToken: 'fcmToken',
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
       }
-    } catch (error) {
-      setEnrolling(false);
-      alert(error.message);
-      console.log("upload Error", error);
-    }
-  };
+    );
 
+    setEnrolling(false);
+    const upload = response.data;
+    
+    if (upload) {
+      if (upload?.statusCode === 200) {
+        Alert.alert('Successfully enrolled');
+        setModalVisible(false);
+      }
+      if (upload?.statusCode === 502) {
+        Alert.alert(upload?.errors.join('\n'));
+      }
+    }
+  } catch (error) {
+    setEnrolling(false);
+    alert(error.message);
+    console.log('upload Error', error);
+  }
+};
   return (
     // <SafeAreaView style={styles.safearea}>
       <View style={styles.container}>
