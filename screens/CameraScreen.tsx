@@ -53,7 +53,7 @@ export default function CameraScreen({ navigation, route }) {
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
-  if(!permission?.granted) {
+  if (!permission?.granted) {
     requestPermission();
   }
 
@@ -265,7 +265,7 @@ export default function CameraScreen({ navigation, route }) {
       setUploading(true);
       try {
         const response = await axios.post(
-          'http://18.130.238.178:5000/api/v1/Identity/bank/getenrollee',
+          'http://demo.snappayapp.com/api/v1/Identity/bank/getenrollee',
           {
             image: base64,
             bankCode: '01',
@@ -277,9 +277,9 @@ export default function CameraScreen({ navigation, route }) {
             },
           }
         );
-  
+
         const upload = response.data;
-  
+
         if (upload) {
           console.log('upload response', upload);
           if (upload?.statusCode === 200) {
@@ -298,7 +298,7 @@ export default function CameraScreen({ navigation, route }) {
       }
     }
   };
-  
+
 
   const handleCancelPreview = () => {
     navigation.goBack();

@@ -70,7 +70,7 @@ export default function WelcomeScreen() {
           base64: true,
         });
 
-        console.log("jiji: ", result?.assets[0].base64 );
+        console.log("jiji: ", result?.assets[0].base64);
 
         if (!result.canceled) {
           const dataURL = `${result?.assets[0]?.base64}`;
@@ -108,143 +108,143 @@ export default function WelcomeScreen() {
     await uploadData();
   };
 
-const uploadData = async () => {
-  setEnrolling(true);
-  try {
-    const response = await axios.post(
-     'https://demo.snappayapp.com/​api​/v1​/Identity​/bank​/enroll',
-      {
-        bankCode: '01',
-        fullname,
-        image,
-        fcmToken: 'fcmToken',
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+  const uploadData = async () => {
+    setEnrolling(true);
+    try {
+      const response = await axios.post(
+        'https://demo.snappayapp.com/api/v1/identity/bank/enroll',
+        {
+          bankCode: '01',
+          fullname,
+          image,
+          fcmToken: 'fcmToken',
         },
-      }
-    );
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+        }
+      );
 
-    setEnrolling(false);
-    const upload = response.data;
-    
-    if (upload) {
-      if (upload?.statusCode === 200) {
-        Alert.alert('Successfully enrolled');
-        setModalVisible(false);
+      setEnrolling(false);
+      const upload = response.data;
+
+      if (upload) {
+        if (upload?.statusCode === 200) {
+          Alert.alert('Successfully enrolled');
+          setModalVisible(false);
+        }
+        if (upload?.statusCode === 502) {
+          Alert.alert(upload?.errors.join('\n'));
+        }
       }
-      if (upload?.statusCode === 502) {
-        Alert.alert(upload?.errors.join('\n'));
-      }
+    } catch (error) {
+      setEnrolling(false);
+      alert(error.message);
+      console.log('upload Error', error);
     }
-  } catch (error) {
-    setEnrolling(false);
-    alert(error.message);
-    console.log('upload Error', error);
-  }
-};
+  };
   return (
     // <SafeAreaView style={styles.safearea}>
-      <View style={styles.container}>
-        <Modal
-          animationType="slide"
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert("Modal has been closed.");
-            setModalVisible(!modalVisible);
-          }}
-        >
-          <ScrollView>
-            <View style={styles.centeredView}>
-              <View style={styles.logoContainer}>
-                <Image
-                  source={require("../assets/images/logo.png")}
-                  width={100}
-                  height={97}
-                  style={[styles.logo, { width: 100 }]}
-                  resizeMode="contain"
+    <View style={styles.container}>
+      <Modal
+        animationType="slide"
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+          setModalVisible(!modalVisible);
+        }}
+      >
+        <ScrollView>
+          <View style={styles.centeredView}>
+            <View style={styles.logoContainer}>
+              <Image
+                source={require("../assets/images/logo.png")}
+                width={100}
+                height={97}
+                style={[styles.logo, { width: 100 }]}
+                resizeMode="contain"
+              />
+            </View>
+            <View style={styles.modalView}>
+              <TouchableOpacity
+                style={{ width: "100%" }}
+                onPress={() => {
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <Text style={{ textAlign: "right" }}>Close</Text>
+              </TouchableOpacity>
+              <View
+                style={{
+                  width: "100%",
+                  marginBottom: 16,
+                }}
+              >
+                {image && (
+                  <Image
+                    source={{ uri: `data:image/jpeg;base64,${image}` }}
+                    style={{ width: 100, height: 100, borderRadius: 50 }}
+                  />
+                )}
+              </View>
+              <TouchableOpacity style={styles.chooseImg} onPress={pickImage}>
+                <Text>{image ? "Replace Image" : "Choose Image"}</Text>
+              </TouchableOpacity>
+
+              <View style={{ width: "100%" }}>
+                <Text style={{ marginBottom: 8 }}>Full name</Text>
+                <TextInput
+                  style={styles.textInput}
+                  onChangeText={handleFullname}
+                  value={fullname}
                 />
               </View>
-              <View style={styles.modalView}>
-                <TouchableOpacity
-                  style={{ width: "100%" }}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                  }}
-                >
-                  <Text style={{ textAlign: "right" }}>Close</Text>
-                </TouchableOpacity>
-                <View
-                  style={{
-                    width: "100%",
-                    marginBottom: 16,
-                  }}
-                >
-                  {image && (
-                    <Image
-                      source={{ uri: `data:image/jpeg;base64,${image}` }}
-                      style={{ width: 100, height: 100, borderRadius: 50 }}
-                    />
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={enrolUser}
+              >
+                <Text style={styles.textStyle}>
+                  {enrolling && (
+                    <ActivityIndicator animating={enrolling} color="white" />
                   )}
-                </View>
-                <TouchableOpacity style={styles.chooseImg} onPress={pickImage}>
-                  <Text>{image ? "Replace Image" : "Choose Image"}</Text>
-                </TouchableOpacity>
-
-                <View style={{ width: "100%" }}>
-                  <Text style={{ marginBottom: 8 }}>Full name</Text>
-                  <TextInput
-                    style={styles.textInput}
-                    onChangeText={handleFullname}
-                    value={fullname}
-                  />
-                </View>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={enrolUser}
-                >
-                  <Text style={styles.textStyle}>
-                    {enrolling && (
-                      <ActivityIndicator animating={enrolling} color="white" />
-                    )}
-                    Submit
-                  </Text>
-                </Pressable>
-              </View>
+                  Submit
+                </Text>
+              </Pressable>
             </View>
-          </ScrollView>
-        </Modal>
+          </View>
+        </ScrollView>
+      </Modal>
 
-        <View style={styles.logoContainer}>
-          <Image
-            source={require("../assets/images/logo.png")}
-            width={100}
-            height={97}
-            style={[styles.logo]}
-            resizeMode="contain"
-          />
-        </View>
-        <View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text style={styles.buttonText}>Enrol</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={showNotification}>
-            <Text style={styles.buttonText}>Show Notification</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Switch
-            onValueChange={setEnableSpoofingChallenge}
-            value={enableSpoofingChallenge}
-          />
-          <Text style={{ marginLeft: 10 }}>Enable Spoofing Challenge</Text>
-        </View>
+      <View style={styles.logoContainer}>
+        <Image
+          source={require("../assets/images/logo.png")}
+          width={100}
+          height={97}
+          style={[styles.logo]}
+          resizeMode="contain"
+        />
       </View>
+      <View>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.buttonText}>Enrol</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={showNotification}>
+          <Text style={styles.buttonText}>Show Notification</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Switch
+          onValueChange={setEnableSpoofingChallenge}
+          value={enableSpoofingChallenge}
+        />
+        <Text style={{ marginLeft: 10 }}>Enable Spoofing Challenge</Text>
+      </View>
+    </View>
     // </SafeAreaView>
   );
 }
