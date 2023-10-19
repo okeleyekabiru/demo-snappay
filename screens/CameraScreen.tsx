@@ -265,7 +265,7 @@ export default function CameraScreen({ navigation, route }) {
       setUploading(true);
       try {
         const response = await axios.post(
-          'http://demo.snappayapp.com/api/v1/Identity/bank/getenrollee',
+          'https://demo.snappayapp.com/api/v1/Identity/bank/getenrollee',
           {
             image: base64,
             bankCode: '01',
